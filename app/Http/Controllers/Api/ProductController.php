@@ -17,7 +17,7 @@ class ProductController extends Controller
         $query = Product::with('user:id,name', 'category:id,name');
 
         if ($request->search) {
-            $query->where(function($q) use ($request) {
+            $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', "%{$request->search}%")
                     ->orWhere('description', 'like', "%{$request->search}%");
             });
@@ -34,7 +34,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->role !== 'seller') {
+        if ($request->user()->role !== 'seller') {
             return response()->json([
                 'success' => false,
                 'message' => 'Hanya seller yg dapat membuat produk',
@@ -45,7 +45,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
-            'category_id' => 'required|exists:categories, id',
+            'category_id' => 'required|exists:categories,id',
             'file_url' => 'nullable|url',
         ]);
 
@@ -73,7 +73,7 @@ class ProductController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data' => $product->load(['user:id,name', 'category:id,name']), 
+            'data' => $product->load(['user:id,name', 'category:id,name']),
         ]);
     }
 
@@ -98,7 +98,11 @@ class ProductController extends Controller
         ]);
 
         $product->update($request->only([
-            'name', 'price', 'description', 'category_id', 'file_url'
+            'name',
+            'price',
+            'description',
+            'category_id',
+            'file_url'
         ]));
 
         if ($request->has('name')) {
@@ -110,7 +114,6 @@ class ProductController extends Controller
             'message' => 'Produk berhasil diperbarui',
             'data' => $product->fresh()->load('category'),
         ]);
-
     }
 
     /**
