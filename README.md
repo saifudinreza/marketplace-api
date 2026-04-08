@@ -1,58 +1,259 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🛒 Marketplace API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+RESTful API untuk aplikasi marketplace berbasis **Laravel**, dirancang dengan arsitektur yang clean dan scalable.
+Project ini mencakup autentikasi, manajemen kategori, dan produk dengan relasi yang terstruktur.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✨ Highlight Project
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- 🔐 Token Authentication (Sanctum)
+- 📂 Modular Controller Structure
+- 🔗 Relasi Category & Product
+- 🧪 Siap digunakan dengan Postman
+- 📊 Clean API Response Structure
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🧠 Arsitektur API
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Berikut alur hubungan antar controller:
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```mermaid
+flowchart TD
+    A[AuthController] -->|Login/Register| B[Token]
+    B --> C[CategoryController]
+    B --> D[ProductController]
+    C -->|Create Category| E[Category ID]
+    E --> D
+    D -->|Create Product| F[Product Data]
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+📌 Penjelasan:
 
-## Contributing
+- AuthController menghasilkan token
+- Token digunakan untuk akses Category & Product
+- Product bergantung pada Category
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 🚀 Fitur Utama
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 🔐 Authentication
 
-## Security Vulnerabilities
+- Register
+- Login
+- Logout
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 📂 Category Management
 
-## License
+- Create Category
+- Get Categories
+- Update Category
+- Delete Category
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 📦 Product Management
+
+- Create Product
+- Get Products
+- Update Product
+- Delete Product
+
+---
+
+## 🛠️ Tech Stack
+
+- Laravel
+- MySQL
+- Postman
+
+---
+
+## ⚙️ Instalasi
+
+```bash
+git clone https://github.com/saifudinreza/marketplace-api.git
+cd marketplace-api
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+### Setup Database
+
+```env
+DB_DATABASE=marketplace
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+```bash
+php artisan migrate
+php artisan serve
+```
+
+---
+
+## 🔐 Authentication Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant API
+
+    User->>API: Register/Login
+    API-->>User: Token
+    User->>API: Request dengan Token
+    API-->>User: Response Data
+    User->>API: Logout
+```
+
+---
+
+## 🔄 API Usage Flow (Best Practice)
+
+Ikuti urutan ini saat testing:
+
+```mermaid
+flowchart LR
+    A[Register] --> B[Login]
+    B --> C[Create Category]
+    C --> D[Get Categories]
+    D --> E[Update Category]
+    E --> F[Create Product]
+    F --> G[Get Products]
+    G --> H[Update Product]
+    H --> I[Delete Product]
+    I --> J[Delete Category]
+    J --> K[Logout]
+```
+
+---
+
+## 📦 Penjelasan Controller
+
+### 🔐 AuthController
+
+Mengelola autentikasi:
+
+- `register()` → membuat akun
+- `login()` → generate token
+- `logout()` → revoke token
+
+---
+
+### 📂 CategoryController
+
+Mengelola kategori:
+
+- `index()` → ambil semua kategori
+- `store()` → tambah kategori
+- `update()` → edit kategori
+- `destroy()` → hapus kategori
+
+📌 Category wajib dibuat sebelum Product
+
+---
+
+### 📦 ProductController
+
+Mengelola produk:
+
+- `index()` → ambil semua produk
+- `store()` → tambah produk
+- `update()` → edit produk
+- `destroy()` → hapus produk
+
+📌 Product membutuhkan `category_id`
+
+---
+
+## 🔗 Endpoint API
+
+| Method | Endpoint             | Keterangan      |
+| ------ | -------------------- | --------------- |
+| POST   | /api/register        | Register        |
+| POST   | /api/login           | Login           |
+| POST   | /api/logout          | Logout          |
+| GET    | /api/categories      | Get Categories  |
+| POST   | /api/categories      | Create Category |
+| PUT    | /api/categories/{id} | Update Category |
+| DELETE | /api/categories/{id} | Delete Category |
+| GET    | /api/products        | Get Products    |
+| POST   | /api/products        | Create Product  |
+| PUT    | /api/products/{id}   | Update Product  |
+| DELETE | /api/products/{id}   | Delete Product  |
+
+---
+
+## 🧪 Panduan Postman
+
+### 🔧 Setup Environment
+
+```
+base_url = http://127.0.0.1:8000/api
+token =
+category_id =
+product_id =
+```
+
+---
+
+### 🔑 Authorization
+
+Gunakan di setiap request:
+
+```
+Authorization: Bearer {{token}}
+```
+
+---
+
+### ▶️ Workflow Testing
+
+1. Login → simpan token
+2. Create Category → simpan ID
+3. Create Product → gunakan category_id
+4. Lakukan testing CRUD lainnya
+
+---
+
+## 📊 Contoh Response
+
+```json
+{
+    "success": true,
+    "message": "Success",
+    "data": {}
+}
+```
+
+---
+
+## 📌 Best Practice
+
+- Gunakan environment variable di Postman
+- Selalu login sebelum akses API
+- Validasi relasi category sebelum create product
+
+---
+
+## 👨‍💻 Author
+
+**Saifudin Reza**
+
+---
+
+## 🚀 Future Improvement
+
+- Upload image product
+- Pagination & filtering
+- Role-based authentication
+- Documentation Swagger
+
+---
+
+## ⭐ Closing
+
+Project ini dibuat sebagai bagian dari perjalanan menjadi Fullstack Developer.
+Jika project ini membantu, jangan lupa kasih ⭐ di repository 🙌
